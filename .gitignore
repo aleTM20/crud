@@ -1,0 +1,6 @@
+/venv
+/.idea
+*.sqlite3
+*.pyc
+/static/dashboard/dist
+/static/dashboard/plugins
