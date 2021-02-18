@@ -4,3 +4,4 @@
 *.pyc
 /static/dashboard/dist
 /static/dashboard/plugins
+/media
