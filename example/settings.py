@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'crudApi',
     'rest_framework',
     'rest_framework.authtoken',
-
+    'import_export',
 ]
 
 REST_FRAMEWORK = {

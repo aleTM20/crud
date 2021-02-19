@@ -9,6 +9,28 @@ from django.shortcuts import render, get_object_or_404
 from user.models import Staff
 
 
+def allowed_area(role):
+    def area(function):
+        def wrap(request, *args, **kwargs):
+            current_role = get_object_or_404(Staff, user=request.user).role
+            if isinstance(role, list):
+                if current_role in role:
+                    return function(request, *args, **kwargs)
+            else:
+                if current_role == role:
+                    return function(request, *args, **kwargs)
+            context = {
+                'msg': f'Se ha autenticado como <strong>{request.user.username}</strong>, '
+                       f'pero no está autorizado a acceder '
+                       'a esta página. ¿Desea autenticarse con una cuenta diferente? '
+            }
+            return render(request, 'user/login.html', context)
+
+        return wrap
+
+    return area
+
+
 def redirect_by_role(request, role):
     if role == 'AM':
         return HttpResponseRedirect('/administrator')
@@ -19,15 +41,15 @@ def redirect_by_role(request, role):
 def login_site(request):
     if request.method == 'GET':
         if not request.user.is_authenticated:
-            # next_url = request.GET.get('next', None)
-            # cache.set('next', next_url)
-            # if next_url:
-            #     context = {
-            #         'msg': 'Ingresa tus credenciales para poder acceder'
-            #     }
-            #     return render(request, 'user/login.html', context)
-            # else:
-            return render(request, 'user/login.html', {})
+            next_url = request.GET.get('next', None)
+            cache.set('next', next_url)
+            if next_url:
+                context = {
+                    'msg': 'Ingresa tus credenciales para poder acceder'
+                }
+                return render(request, 'user/login.html', context)
+            else:
+                return render(request, 'user/login.html', {})
         else:
             return redirect_by_role(request, get_object_or_404(Staff, user=request.user).role)
     elif request.method == 'POST':
@@ -38,13 +60,13 @@ def login_site(request):
             if user.is_active:
                 login(request, user)
                 # verificar si hay una ruta siguiente
-                # next_url = cache.get('next')
-                # if next_url:
-                #     cache.delete('next')
-                # return HttpResponseRedirect(next_url)
-                # else:
-                role = Staff.objects.get(user=user)
-                return redirect_by_role(request, role.role)
+                next_url = cache.get('next')
+                if next_url:
+                    cache.delete('next')
+                    return HttpResponseRedirect(next_url)
+                else:
+                    role = Staff.objects.get(user=user)
+                    return redirect_by_role(request, role.role)
         else:
             context = {
                 'msg': 'Tus credenciales no se encuentran en nuestros registros'

@@ -12,3 +12,6 @@ class Person(models.Model):
     is_active = models.BooleanField(default=True)
     date_update = models.DateTimeField(auto_now=timezone.now())
     date_joined = models.DateTimeField(auto_now_add=timezone.now())
+
+    def __str__(self):
+        return f'ID {self.id} - Nombre: {self.first_name} {self.last_name}'
