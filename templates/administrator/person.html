@@ -1,0 +1,206 @@
+{% extends 'administrator/index.html' %}
+{% block extra_css %}
+    {% include 'templates/data-tables-css.html' %}
+{% endblock %}
+{% block content %}
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-12">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item active">Personas</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+
+    <!-- Main content -->
+    <div class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h3 class="card-title">
+                                        <strong>PERSONAS</strong>
+                                    </h3>
+                                </div>
+                                <div class="col-md-4">
+                                    <button class="btn btn-dark btn-block"
+                                            type="button" data-toggle="modal"
+                                            data-target="#person_modal">
+                                        <i class="fas fa-user-plus mr-2"></i>
+                                        Agregar persona
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="person_datatable" class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>Foto</th>
+                                        <th>Nombre</th>
+                                        <th>Apellido</th>
+                                        <th>Telefono</th>
+                                        <th>Email</th>
+                                        <th>Creación</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for person in persons %}
+                                        <tr>
+                                            <td>
+                                                <img src="{{ person.picture.url }}" alt="{{ person.picture.url }}"
+                                                     class="img-circle" style="max-width: 50px!important;">
+                                            </td>
+                                            <td>{{ person.first_name }}</td>
+                                            <td>{{ person.last_name }}</td>
+                                            <td>{{ person.phone }}</td>
+                                            <td>{{ person.email }}</td>
+                                            <td>Hace {{ person.date_joined|timesince }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal -->
+                    <div class="modal fade" id="person_modal" tabindex="-1" role="dialog"
+                         aria-labelledby="person_modalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header bg-dark">
+                                    <h5 class="modal-title" id="person_modalLabel">
+                                        Agregar persona
+                                    </h5>
+                                    <button type="button" class="close text-white" data-dismiss="modal"
+                                            aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="person_form" method="post">
+                                        {% csrf_token %}
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="">
+                                                    <label for="id_picture"
+                                                           class="btn btn-info btn-block"
+                                                           id="id_label_file">
+                                                        <i class="fas fa-upload mr-2"></i>
+                                                        Agrega tu foto
+                                                    </label>
+                                                    <input type="file" name="picture" id="id_picture"
+                                                           required
+                                                           accept="image/*"
+                                                           style="display:none;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="id_first_name">Nombre:</label>
+                                                    <input type="text" name="first_name" class="form-control"
+                                                           placeholder="Nombre de la persona" maxlength="50"
+                                                           id="id_first_name">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="id_last_name">Apellido:</label>
+                                                    <input type="text" name="last_name" class="form-control"
+                                                           placeholder="Apellido" maxlength="50" id="id_last_name">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="id_phone">Telefono:</label>
+                                                    <input type="text" name="phone" class="form-control"
+                                                           placeholder="Telefono" maxlength="15" required=""
+                                                           id="id_phone">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="id_email">Email:</label>
+                                                    <input type="email" name="email" class="form-control"
+                                                           placeholder="Email" maxlength="254" required=""
+                                                           id="id_email">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <button type="button" class="btn btn-outline-dark btn-block"
+                                                        data-dismiss="modal">
+                                                    Cerrar
+                                                </button>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <button type="submit" class="btn btn-dark btn-block">
+                                                    Crear persona
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+{% endblock %}
+{% block extra_js %}
+    {% include 'templates/data-tables-js.html' %}
+    <script>
+        initTable()
+
+        var labelFile = document.getElementById("id_label_file")
+        document.getElementById("id_picture").addEventListener("change", e => {
+            labelFile.innerHTML = `<i class="fas fa-upload mr-2"></i> ${e.target.files[0].name}`
+        }, false);
+
+
+        document.getElementById('person_form').addEventListener('submit', e => {
+            e.preventDefault()
+            let formData = new FormData(e.target)
+            fetch('/administrator/createPerson/', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(response => {
+                    $('#person_modal').modal('hide');
+                    e.target.reset()
+                    labelFile.innerHTML = `<i class="fas fa-upload mr-2"></i> Agrega tu foto`
+                    $('#person_datatable').DataTable().row.add([
+                        `<img class="img-circle" style="max-width: 50px!important;" src="${response.person.picture}" alt="${response.person.picture}">`,
+                        response.person.first_name,
+                        response.person.last_name,
+                        response.person.phone,
+                        response.person.email,
+                        response.person.date_joined,
+                    ]).node().id = `row_${response.person.picture}`
+                    $('#person_datatable').DataTable().draw()
+                    toastr.success('La persona se creo con exito')
+                })
+                .catch(error =>
+                    toastr.error(error)
+                )
+        })
+    </script>
+{% endblock %}

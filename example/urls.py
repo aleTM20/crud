@@ -24,5 +24,5 @@ urlpatterns = [
                   path('admin/', admin.site.urls),
                   path('administrator/', include('administrator.urls')),
                   path('employee/', include('employee.urls')),
-                  path('crudApi/v1/', include('administrator.urls')),
+                  path('crudApi/v1/', include('crudApi.urls')),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
